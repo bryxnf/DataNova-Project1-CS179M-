@@ -1,11 +1,11 @@
 import os
 from math import ceil
 
-def routeFileCreator(path, input_basename, D, out_dir):
+def routeFileCreator(path, inputBasename, D, outDir):
 
-    distance_traveled = ceil(D)                                        #rounding D up because D may have decimals
-    filename = f"{input_basename}_SOLUTION_{distance_traveled}.txt"
-    filepath = os.path.join(out_dir, filename)
+    distanceTraveled = ceil(D)                                        #rounding D up because D may have decimals
+    filename = f"{inputBasename}_SOLUTION_{distanceTraveled}.txt"
+    filepath = os.path.join(outDir, filename)
 
     with open(filepath, "w") as pathTextFile:                           #creating the textfile
         for nodeNumber in path:
