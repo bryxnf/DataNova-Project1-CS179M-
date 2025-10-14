@@ -28,5 +28,4 @@ def routeDisplay(route, inputBasename, D):     #route are the corrodinates in an
     plt.title("Optimal Drone Route")    
     plt.xlim(xAxisMin - 10, xAxisMax + 10)                                                     #adding 10 pixel buffer between any point and the edges
     plt.ylim(yAxisMin - 10, yAxisMax + 10)        
-
     plt.savefig(f"{inputBasename}_SOLUTION_{distanceTraveled}.jpg", format = "jpeg", dpi = 300)   #saving it as a jpeg file
