@@ -4,20 +4,19 @@ import os
 
 def routeDisplay(route, inputBasename, D):     #route are the corrodinates in an array ex: [(1,2), (2, 4)]
     
-    distanceTraveled = ceil(D)   
+    distanceTraveled = ceil(D)                 #rounding D up 
     xCoordinates = [nodeCoordinates[0] for nodeCoordinates in route]
     yCoordinates = [nodeCoordinates[1] for nodeCoordinates in route]
     xAxisMin, xAxisMax = min(xCoordinates), max(xCoordinates)
     yAxisMin, yAxisMax = min(yCoordinates), max(yCoordinates)
-    xAxisRange, yAxisRange = xAxisMax - xAxisMin + 20, yAxisMax - yAxisMin + 20   #the length of x and y edges
-    rangeRatio = xAxisRange / yAxisRange
-
-    if rangeRatio >= 1:                                   #calculating which side is smaller
+    xAxisRange, yAxisRange = xAxisMax - xAxisMin + 20, yAxisMax - yAxisMin + 20   #the length of x and y edges, accounting for 10 pixel buffer
+    rangeRatio = xAxisRange / yAxisRange                                          #ratio to compare the sides of the jpg file
+    height, width = yAxisRange, xAxisRange
+    
+    if rangeRatio >= 1:                                   
         height = 1920
-        width = int(height * rangeRatio)
     else:
         width = 1920  
-        height = int(width / rangeRatio)  
 
     widthConversion = width / 300                          #converting pixels to inches
     heightConversion = height / 300
