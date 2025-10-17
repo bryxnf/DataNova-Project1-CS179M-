@@ -1,11 +1,9 @@
-import numpy as np, random, operator, pandas as pd
-# import matplotlib.pyplot as plt
+from __future__ import annotations
+import math
+import random
+import numpy as np
 
-def distance(i,j):
-    '''
-    Method calculate distance between two points if coordinates are passed
-    i =(x,y) coordinates of first point
-    j =(x,y) coordinates of second point
-    '''
-    #returning distance of points i and j 
-    return np.sqrt((i[0]-j[0])**2 + (i[1]-j[1])**2)
+
+def euclideanDistance(point1, point2):
+    return np.sqrt(np.sum((np.array(point1) - np.array(point2))**2))
+
