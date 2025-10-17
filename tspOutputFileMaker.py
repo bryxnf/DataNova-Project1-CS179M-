@@ -11,4 +11,5 @@ def routeFileCreator(path, inputBasename, D, outDir):
         for nodeNumber in path:
             pathTextFile.write(f"{nodeNumber}\n")
 
+    print(f"Route written to disk as {inputBasename}_SOLUTION_{distanceTraveled}.txt")
     return filepath
