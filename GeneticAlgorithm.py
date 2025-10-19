@@ -40,3 +40,15 @@ def nearestNeigborOrder(points=None,D=None,start=0):
         cur = nxt
 
     return order
+
+def solveTSPNN(points, start= 0, returnPoints = False, closed = True):
+    points = np.asarray(points, dtype=float)
+    order = nearestNeigborOrder(points=points, start=start)
+
+    if closed:
+        order = np.concatenate([order,order[:1]])
+    
+    if returnPoints:
+        return points[order]
+    else:
+        return order
