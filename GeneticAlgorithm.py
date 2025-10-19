@@ -23,3 +23,20 @@ def nearestNeigborOrder(points=None,D=None,start=0):
         D = buildDistanceMatrix(points)
     else:
         D = np.asarray(D, dtype=float)
+
+    n = D.shape[0]
+    order = np.empty(n, dtype=int)
+    visited = np.zeros(n, dtype=bool)
+
+    cur = int(start) % n
+    order[0] = cur
+    visited[cur] = True
+
+    for i in range(1, n):
+        drow = np.where(visited, np.inf, D[cur])
+        nxt = int(np.argmin(drow))
+        order[i] = nxt
+        visited[nxt] = True
+        cur = nxt
+
+    return order
