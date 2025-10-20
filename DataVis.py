@@ -23,17 +23,19 @@ def routeDisplay(route, inputBasename, D):     #route are the corrodinates in an
     widthConversion = width / 300                          #converting pixels to inches
     heightConversion = height / 300
 
-    xBuffer = (xAxisRange / width) * 10                   #ten pixel buffers
-    yBuffer = (yAxisRange / height) * 10
+    xBuffer = (xAxisRange / width) * 50                   #50 pixel buffers to fix edge problems
+    yBuffer = (yAxisRange / height) * 50
     
     plt.figure(facecolor = "lightblue", figsize = (widthConversion, heightConversion))                                #background
+    ax = plt.gca()
+    ax.set_facecolor("lightblue")                                                             # make plot background match figure
+    ax.axis("off")
     plt.plot(xCoordinates, yCoordinates, marker = "o", color = "black")               
-    plt.scatter(xCoordinates[0], yCoordinates[0], color = "red")                               #the start and the end nodes of the line graph
-    plt.title("Optimal Drone Route")    
+    plt.scatter(xCoordinates[-1], yCoordinates[-1], s = 80, zorder = 5, color = "red")     #the start and the end nodes of the line graph
     plt.xlim(xAxisMin - xBuffer, xAxisMax + xBuffer)                                                     #adding 10 pixel buffer between any point and the edges
     plt.ylim(yAxisMin - yBuffer, yAxisMax + yBuffer)        
 
-    desktop = os.path.join(os.path.expanduser("~"), "Desktop")
+    desktop = os.path.join(os.path.expanduser("~"), "OneDrive", "Desktop")
     output_to_desktop = os.path.join(desktop, f"{inputBasename}_SOLUTION_{distanceTraveled}.jpg")
-    plt.savefig(output_to_desktop, format = "jpeg", dpi = 300)                          #saving it as a jpeg file
+    plt.savefig(output_to_desktop, format = "jpeg", bbox_inches = None, dpi = 300)   #saving it as a jpeg file
     plt.close()
