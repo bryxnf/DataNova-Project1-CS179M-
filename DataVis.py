@@ -28,7 +28,7 @@ def routeDisplay(route, inputBasename, D):     #route are the corrodinates in an
     
     plt.figure(facecolor = "lightblue", figsize = (widthConversion, heightConversion))                                #background
     ax = plt.gca()
-    ax.set_facecolor("lightblue")                                                             # make plot background match figure
+    ax.set_facecolor("lightblue")                                                            
     ax.axis("off")
     plt.plot(xCoordinates, yCoordinates, marker = "o", color = "black")               
     plt.scatter(xCoordinates[-1], yCoordinates[-1], s = 80, zorder = 5, color = "red")     #the start and the end nodes of the line graph
