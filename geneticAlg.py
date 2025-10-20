@@ -1,28 +1,54 @@
-# geneticAlg.py
-import numpy as np
+from __future__ import annotations
+import math
 import random
+import numpy as np
 
-def run_algorithm(coords, config):
-    """
-    Temporary stand-in for the real Genetic Algorithm.
-    Returns a fake 'route' and total distance D.
-    """
-    print("[geneticAlg] Running mock genetic algorithm...")
+def buildDistanceMatrix(points):
+    X = np.asarray(points, dtype=float)
+    diff = X[:,None,:] - X[None,:,:]
+    return np.sqrt(np.sum(diff * diff, axis=2, dtype=float))
 
-    N = len(coords)
-    route_indices = list(range(N))
-    random.shuffle(route_indices)
+def tourLength(order, D, closed=True):
+    a = order
+    b = np.roll(order, -1) if closed else order[1:]
+    if not closed:
+        a = a[:-1]
+    return float(np.sum(D[a,b]))
 
-    # Make it a loop: start and end at index 0
-    route_indices = [0] + route_indices + [0]
+def nearestNeigborOrder(points=None,D=None,start=0):
+    if (points is None) == (D is None):
+        raise ValueError("Provide exactly one of points= or D=.")
+    
+    if D is None:
+        D = buildDistanceMatrix(points)
+    else:
+        D = np.asarray(D, dtype=float)
 
-    # Convert route indices to coordinate pairs
-    route_coords = [tuple(coords[i]) for i in route_indices]
+    n = D.shape[0]
+    order = np.empty(n, dtype=int)
+    visited = np.zeros(n, dtype=bool)
 
-    # Fake total distance (sum of straight lines)
-    D = 0.0
-    for i in range(len(route_coords) - 1):
-        D += np.linalg.norm(np.array(route_coords[i+1]) - np.array(route_coords[i]))
+    cur = int(start) % n
+    order[0] = cur
+    visited[cur] = True
 
-    print(f"[geneticAlg] Mock route complete. Total distance ≈ {D:.2f}")
-    return route_coords, D
+    for i in range(1, n):
+        drow = np.where(visited, np.inf, D[cur])
+        nxt = int(np.argmin(drow))
+        order[i] = nxt
+        visited[nxt] = True
+        cur = nxt
+
+    return order
+
+def solveTSPNN(points, start= 0, returnPoints = False, closed = True):
+    points = np.asarray(points, dtype=float)
+    order = nearestNeigborOrder(points=points, start=start)
+
+    if closed:
+        order = np.concatenate([order,order[:1]])
+    
+    if returnPoints:
+        return points[order]
+    else:
+        return order

@@ -18,12 +18,16 @@ def main():
     #print(f"Drop locations found within input file: {file_path}")
 
     print("Running Genetic Algorithm...")
-    best_route, total_distance = run_algorithm(file_path) #assigns local variable to the returned tupleand the total distance
-    results = run_algorithm(file_path)
 
-    if results is None: #incase algorithm fails
+    config= {} #empty config for now
+    best_route, total_distance = run_algorithm(file_path, config) #assigns local variable to the returned tuple and the total distance
+
+    if best_route is None or total_distance is None: #incase algorithm fails
         raise RuntimeError("Genetic algorithm failed to produce a result.")
-    best_route, total_distance = results
+
+    routeFileCreator(best_route, os.path.splitext(filename)[0], total_distance)
+
+    routeDisplay(best_route, os.path.splitext(filename)[0], total_distance) 
 
     print(f"Algorithm completed. Distance traveled: {total_distance:.2f}")
 
