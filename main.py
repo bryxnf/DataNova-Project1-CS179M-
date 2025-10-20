@@ -41,12 +41,12 @@ if __name__ == "__main__":
     ], dtype=float)
 
     # 1) Get order of indices (closed tour that returns to start)
-    order_closed = solveTSPNN(pts, start=0, returnPoints=False, closed=True)
+    order_closed = solveTSPNN(pts, start=1, returnPoints=False, closed=True)
     print("Visit order (indices, closed):", order_closed.tolist())
 
     # 2) Get the coordinates in visit order (open tour, no return)
-    route_open = solveTSPNN(pts, start=0, returnPoints=True, closed=False)
+    route_open = solveTSPNN(pts, start=1, returnPoints=True, closed=False)
     print("Route coords (open):\n", route_open)
 
     routeDisplay(pts, "testing", 1000)
-    routeFileCreator(pts, "testing", 1000)
+    routeFileCreator(order_closed, "testing", 1000)
