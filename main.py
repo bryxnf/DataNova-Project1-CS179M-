@@ -1,6 +1,7 @@
 from GeneticAlgorithm import solveTSPNN
 import numpy as np
 from DataVis import routeDisplay
+from tspOutputFileMaker import routeFileCreator
 
 if __name__ == "__main__":
     # Example with your style of input: 2D array [n, 2]
@@ -48,3 +49,4 @@ if __name__ == "__main__":
     print("Route coords (open):\n", route_open)
 
     routeDisplay(pts, "testing", 1000)
+    routeFileCreator(pts, "testing", 1000)

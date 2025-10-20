@@ -23,7 +23,7 @@ def routeDisplay(route, inputBasename, D):     #route are the corrodinates in an
     widthConversion = width / 300                          #converting pixels to inches
     heightConversion = height / 300
 
-    xBuffer = (xAxisRange / width) * 50                   #ten pixel buffers
+    xBuffer = (xAxisRange / width) * 50                   #50 pixel buffers to fix edge problems
     yBuffer = (yAxisRange / height) * 50
     
     plt.figure(facecolor = "lightblue", figsize = (widthConversion, heightConversion))                                #background
