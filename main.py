@@ -1,6 +1,5 @@
 import os
 import sys
-import select
 import time
 import numpy as np
 
@@ -8,9 +7,6 @@ import numpy as np
 from geneticAlg import solveTSPNN, buildDistanceMatrix, tourLength
 from tspOutputFileMaker import routeFileCreator
 from DataVis import routeDisplay
-def user_pressed_enter(): #return true if the user pressed Enter
-    readable, _, _ = select.select([sys.stdin], [], [], 0)
-    return sys.stdin in readable
 
     
 
@@ -30,7 +26,7 @@ def main():
     #print("Running Genetic Algorithm...")
     points = np.loadtxt(file_path)
 
-    print("\nRunning optimization using solveTSPNN...(Press ENTER to stop)\n")
+    print("\nRunning optimization using solveTSPNN...(Press CTRL + C to stop)\n")
 
     best_distance = float('inf')
     best_route = None
@@ -38,6 +34,25 @@ def main():
 
     D = buildDistanceMatrix(points)
 
+    try:
+        while True:
+            iteration += 1
+
+            route_indices = solveTSPNN(points, start = 0, returnPoints = False)
+            distance = tourLength(route_indices, D)
+            route = points[route_indices]
+
+            if distance < best_distance:
+                best_distance = distance
+                best_route = route
+
+                print(f"New best distance found: {best_distance:.2f} on iteration {iteration}")
+            time.sleep(0.5)  # small delay
+
+    except KeyboardInterrupt:
+        print("\nOptimization stopped by user.\n")
+
+    """
     while True:
         iteration += 1
         
@@ -54,7 +69,7 @@ def main():
         if user_pressed_enter():
             print("\nOptimization stopped by user.\n")
             break
-
+    """
 
     if best_route is not None:
         print(f"Best distance after optimization: {best_distance:.2f}")
