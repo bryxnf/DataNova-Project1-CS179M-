@@ -1,8 +1,18 @@
 import os
+import sys
+import select
+import time
+import numpy as np
 
-from geneticAlg import run_algorithm
+
+from geneticAlg import solveTSPNN, buildDistanceMatrix, tourLength
 from tspOutputFileMaker import routeFileCreator
 from DataVis import routeDisplay
+def user_pressed_enter(): #return true if the user pressed Enter
+    readable, _, _ = select.select([sys.stdin], [], [], 0)
+    return sys.stdin in readable
+
+    
 
 def main():
     print("===Drone Route Optimization Program===")
@@ -17,19 +27,46 @@ def main():
 
     #print(f"Drop locations found within input file: {file_path}")
 
-    print("Running Genetic Algorithm...")
+    #print("Running Genetic Algorithm...")
+    points = np.loadtxt(file_path)
 
-    config= {} #empty config for now
-    best_route, total_distance = run_algorithm(file_path, config) #assigns local variable to the returned tuple and the total distance
+    print("\nRunning optimization using solveTSPNN...(Press ENTER to stop)\n")
 
-    if best_route is None or total_distance is None: #incase algorithm fails
-        raise RuntimeError("Genetic algorithm failed to produce a result.")
+    best_distance = float('inf')
+    best_route = None
+    iteration = 0
 
-    routeFileCreator(best_route, os.path.splitext(filename)[0], total_distance)
+    D = buildDistanceMatrix(points)
 
-    routeDisplay(best_route, os.path.splitext(filename)[0], total_distance) 
+    while True:
+        iteration += 1
+        
+        route_indices = solveTSPNN(points, start = 0, returnPoints = False)
+        distance = tourLength(route_indices, D)
 
-    print(f"Algorithm completed. Distance traveled: {total_distance:.2f}")
+        if distance < best_distance:
+            best_distance = distance
+            best_route = points[route_indices]
+
+            print(f"New best distance found: {best_distance:.2f} on iteration {iteration}")
+        time.sleep(0.5)  # small delay
+
+        if user_pressed_enter():
+            print("\nOptimization stopped by user.\n")
+            break
+
+
+    if best_route is not None:
+        print(f"Best distance after optimization: {best_distance:.2f}")
+
+        routeFileCreator(best_route, os.path.splitext(filename)[0], best_distance)
+        print("Route file created.")
+
+        routeDisplay(best_route, os.path.splitext(filename)[0], best_distance)
+        print("Route displayed.")
+
+    else:
+        print("No valid route found.")
 
 
 
