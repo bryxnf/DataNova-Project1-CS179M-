@@ -1,6 +1,4 @@
 from __future__ import annotations
-import math
-import random
 import numpy as np
 
 def buildDistanceMatrix(points):
