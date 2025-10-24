@@ -29,7 +29,7 @@ def routeDisplay(route, inputBasename, D):     #route are the corrodinates in an
     plt.axis("off")
     plt.plot(xCoordinates, yCoordinates, marker = "o", color = "black")               
     plt.scatter(xCoordinates[-1], yCoordinates[-1], s = 80, zorder = 5, color = "red")     #the start and the end nodes of the line graph
-    plt.xlim(xAxisMin - xBuffer, xAxisMax + xBuffer)                                                     #adding 10 pixel buffer between any point and the edges
+    plt.xlim(xAxisMin - xBuffer, xAxisMax + xBuffer)                                                     #adding 50 pixel buffer between any point and the edges
     plt.ylim(yAxisMin - yBuffer, yAxisMax + yBuffer)        
 
     desktop = os.path.join(os.path.expanduser("~"), "OneDrive", "Desktop")
