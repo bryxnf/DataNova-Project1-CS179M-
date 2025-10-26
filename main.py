@@ -44,7 +44,7 @@ def main():
 
             if distance < best_distance:
                 best_distance = distance
-                best_route = route
+                best_route = route_indices
 
                 print(f"New best distance found: {best_distance:.2f} on iteration {iteration}")
             time.sleep(0.5)  # small delay
@@ -77,7 +77,7 @@ def main():
         routeFileCreator(best_route, os.path.splitext(filename)[0], best_distance)
         print("Route file created.")
 
-        routeDisplay(best_route, os.path.splitext(filename)[0], best_distance)
+        routeDisplay(points[best_route], os.path.splitext(filename)[0], best_distance)
         print("Route displayed.")
 
     else:
