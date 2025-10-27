@@ -3,7 +3,7 @@ import time
 import numpy as np
 import threading
 
-from GeneticAlgorithm import solveTSPNN, buildDistanceMatrix, tourLength, tourLengthFromPoints
+from GeneticAlgorithm import solveTSPNN, buildDistanceMatrix, tourLengthFromPoints, displayRouteIndicies
 from tspOutputFileMaker import routeFileCreator
 from DataVis import routeDisplay
 
@@ -52,6 +52,8 @@ def main():
         time.sleep(0.5)  # small delay
         
     print("\nOptimization stopped by user.\n")
+
+    print(f"Indicies of the best route is: {displayRouteIndicies(points,best_route)}")
 
     if best_route is not None:
         print(f"Best distance after optimization: {best_distance:.2f}")

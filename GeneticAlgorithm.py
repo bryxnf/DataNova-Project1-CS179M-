@@ -33,6 +33,10 @@ def displayRouteIndicies(originalPoints,bestRoutPoints):
         if key in indexMap and indexMap[key]:
             routeIndicies.append(indexMap[key].pop(0))
     
+    # Adding the start point again at the end to show it is a closed TSP problem
+    if routeIndicies:
+        routeIndicies.append(routeIndicies[0])
+    
     return routeIndicies
 
 
