@@ -37,5 +37,4 @@ def routeDisplay(route, inputBasename, D):     #route are the corrodinates in an
     output_to_desktop = os.path.join(output_folder, f"{inputBasename}_SOLUTION_{distanceTraveled}.jpg")
 
     plt.savefig(output_to_desktop, format = "jpeg", dpi = 300)                     #saving it as a jpeg file
-    plt.show()
     plt.close()
