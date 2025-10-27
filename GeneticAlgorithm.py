@@ -10,12 +10,14 @@ def buildDistanceMatrix(points):
     # Computing the full pairwise Euclidean distance matrix between all points using NumPy broadcasting
     return np.linalg.norm(pointsArr[:,None,:] - pointsArr[None,:,:], axis = 2)
 
-def tourLength(order, D, closed=True):
-    a = order
-    b = np.roll(order, -1) if closed else order[1:]
-    if not closed:
-        a = a[:-1]
-    return float(np.sum(D[a,b]))
+# Computing the total distance of a closed tour path through a set of points that returns to the start point always
+def tourLength(pointsOrder, distanceMatrix):
+    # Represents the start index of each leg of the tour
+    a = pointsOrder
+    # Destination index of each leg being calculated wrapping back to first node
+    b = np.roll(pointsOrder, -1)
+    # Returning the total tour length in float
+    return float(np.sum(distanceMatrix[a,b]))
 
 def nearestNeigborOrder(points=None,D=None,start=0,*,randomStart=1,rng=None):
     if (points is None) == (D is None):
