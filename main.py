@@ -4,11 +4,9 @@ import time
 import numpy as np
 
 
-from geneticAlg import solveTSPNN, buildDistanceMatrix, tourLength
+from GeneticAlgorithm import solveTSPNN, buildDistanceMatrix, tourLength
 from tspOutputFileMaker import routeFileCreator
 from DataVis import routeDisplay
-
-    
 
 def main():
     print("===Drone Route Optimization Program===")
@@ -34,25 +32,6 @@ def main():
 
     D = buildDistanceMatrix(points)
 
-    try:
-        while True:
-            iteration += 1
-
-            route_indices = solveTSPNN(points, start = 0, returnPoints = False)
-            distance = tourLength(route_indices, D)
-            route = points[route_indices]
-
-            if distance < best_distance:
-                best_distance = distance
-                best_route = route_indices
-
-                print(f"New best distance found: {best_distance:.2f} on iteration {iteration}")
-            time.sleep(0.5)  # small delay
-
-    except KeyboardInterrupt:
-        print("\nOptimization stopped by user.\n")
-
-    """
     while True:
         iteration += 1
         
@@ -65,11 +44,9 @@ def main():
 
             print(f"New best distance found: {best_distance:.2f} on iteration {iteration}")
         time.sleep(0.5)  # small delay
-
-        if user_pressed_enter():
+        userInput = input()
+        if userInput == "":
             print("\nOptimization stopped by user.\n")
-            break
-    """
 
     if best_route is not None:
         print(f"Best distance after optimization: {best_distance:.2f}")
