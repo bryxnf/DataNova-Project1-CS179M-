@@ -1,4 +1,4 @@
-from GeneticAlgorithm import solveTSPNN
+from GeneticAlgorithm import solveTSPNN, buildDistanceMatrix, tourLength
 import numpy as np
 from DataVis import routeDisplay
 from tspOutputFileMaker import routeFileCreator
@@ -41,7 +41,7 @@ if __name__ == "__main__":
     ], dtype=float)
 
     # 1) Get order of indices (closed tour that returns to start)
-    order_closed = solveTSPNN(pts, start=1, returnPoints=False, closed=True)
+    order_closed = solveTSPNN(pts, returnPoints=False, randomStart=3, seed=42)
     print("Visit order (indices, closed):", order_closed.tolist())
 
     # 2) Get the coordinates in visit order (open tour, no return)
