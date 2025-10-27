@@ -3,10 +3,12 @@ import math
 import random
 import numpy as np
 
+# Computes the distance between two points and returns it
 def buildDistanceMatrix(points):
-    X = np.asarray(points, dtype=float)
-    diff = X[:,None,:] - X[None,:,:]
-    return np.sqrt(np.sum(diff * diff, axis=2, dtype=float))
+    # Converting the input points into a numpy array as float points
+    pointsArr = np.asarray(points, dtype=float)
+    # Computing the full pairwise Euclidean distance matrix between all points using NumPy broadcasting
+    return np.linalg.norm(pointsArr[:,None,:] - pointsArr[None,:,:], axis = 2)
 
 def tourLength(order, D, closed=True):
     a = order
