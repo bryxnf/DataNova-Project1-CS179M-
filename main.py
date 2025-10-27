@@ -1,52 +1,90 @@
-from GeneticAlgorithm import solveTSPNN, buildDistanceMatrix, tourLength
+import os
+import sys
+import time
 import numpy as np
-from DataVis import routeDisplay
+
+
+from geneticAlg import solveTSPNN, buildDistanceMatrix, tourLength
 from tspOutputFileMaker import routeFileCreator
+from DataVis import routeDisplay
+
+    
+
+def main():
+    print("===Drone Route Optimization Program===")
+    filename = input("Enter the name of the input file: ").strip()
+
+    input_folder = "InputCordsFolder"
+    file_path = os.path.join(input_folder, filename)
+
+    if not os.path.exists(file_path): #incase file doesnt exist
+        print(f"[ERROR] '{file_path}' not found.")
+        return
+
+    #print(f"Drop locations found within input file: {file_path}")
+
+    #print("Running Genetic Algorithm...")
+    points = np.loadtxt(file_path)
+
+    print("\nRunning optimization using solveTSPNN...(Press CTRL + C to stop)\n")
+
+    best_distance = float('inf')
+    best_route = None
+    iteration = 0
+
+    D = buildDistanceMatrix(points)
+
+    try:
+        while True:
+            iteration += 1
+
+            route_indices = solveTSPNN(points, start = 0, returnPoints = False)
+            distance = tourLength(route_indices, D)
+            route = points[route_indices]
+
+            if distance < best_distance:
+                best_distance = distance
+                best_route = route_indices
+
+                print(f"New best distance found: {best_distance:.2f} on iteration {iteration}")
+            time.sleep(0.5)  # small delay
+
+    except KeyboardInterrupt:
+        print("\nOptimization stopped by user.\n")
+
+    """
+    while True:
+        iteration += 1
+        
+        route_indices = solveTSPNN(points, start = 0, returnPoints = False)
+        distance = tourLength(route_indices, D)
+
+        if distance < best_distance:
+            best_distance = distance
+            best_route = points[route_indices]
+
+            print(f"New best distance found: {best_distance:.2f} on iteration {iteration}")
+        time.sleep(0.5)  # small delay
+
+        if user_pressed_enter():
+            print("\nOptimization stopped by user.\n")
+            break
+    """
+
+    if best_route is not None:
+        print(f"Best distance after optimization: {best_distance:.2f}")
+
+        routeFileCreator(best_route, os.path.splitext(filename)[0], best_distance)
+        print("Route file created.")
+
+        routeDisplay(points[best_route], os.path.splitext(filename)[0], best_distance)
+        print("Route displayed.")
+
+    else:
+        print("No valid route found.")
+
+
 
 if __name__ == "__main__":
-    # Example with your style of input: 2D array [n, 2]
-    pts = np.array([
-        [5.0002244e+01, 8.0033058e+01],
-        [4.7992214e+01, 4.5379771e+01],
-        [9.0472224e+01, 4.3239150e+01],
-        [6.0986665e+01, 8.2531380e+01],
-        [6.1766639e+01, 8.3469815e+00],
-        [8.5944231e+01, 1.3317101e+01],
-        [8.0548942e+01, 1.7338861e+01],
-        [5.7672152e+01, 3.9093780e+01],
-        [1.8292247e+01, 8.3137974e+01],
-        [2.3993201e+01, 8.0336439e+01],
-        [8.8651193e+01, 6.0471179e+00],
-        [2.8674152e+00, 3.9925777e+01],
-        [4.8990139e+01, 5.2687583e+01],
-        [1.6792715e+01, 4.1679947e+01],
-        [9.7868065e+01, 6.5685989e+01],
-        [7.1269447e+01, 6.2797336e+01],
-        [5.0047162e+01, 2.9198408e+01],
-        [4.7108837e+01, 4.3165117e+01],
-        [5.9618868e+00, 1.5487126e+00],
-        [6.8197190e+01, 9.8406372e+01],
-        [4.2431138e+00, 1.6716841e+01],
-        [7.1445465e+00, 1.0621634e+01],
-        [5.2164984e+01, 3.7240974e+01],
-        [9.6730026e+00, 1.9811840e+01],
-        [8.1814855e+01, 4.8968764e+01],
-        [8.1754709e+01, 3.3949341e+01],
-        [7.2243959e+01, 9.5163046e+01],
-        [1.4986544e+01, 9.2033204e+01],
-        [6.5960525e+01, 5.2676998e+00],
-        [5.1859494e+01, 7.3785810e+01],
-        [9.7297455e+01, 2.6911943e+01],
-        [6.4899149e+01, 4.2283562e+01],
-    ], dtype=float)
+    main()
 
-    # 1) Get order of indices (closed tour that returns to start)
-    order_closed = solveTSPNN(pts, returnPoints=False, randomStart=3, seed=42)
-    print("Visit order (indices, closed):", order_closed.tolist())
-
-    # 2) Get the coordinates in visit order (open tour, no return)
-    route_open = solveTSPNN(pts, start=1, returnPoints=True, closed=False)
-    print("Route coords (open):\n", route_open)
-
-    routeDisplay(pts, "testing", 1000)
-    routeFileCreator(order_closed, "testing", 1000)
