@@ -75,18 +75,20 @@ def nearestNeigborOrder(points=None,distanceMatrix=None):
         order[i] = nxt
         visited[nxt] = True
         cur = nxt
-        
+
     return order
 
-def solveTSPNN(points, returnPoints = False):
-
+def solveTSPNN(points):
+    # Convert input points to a NumPy float array for consistency
     points = np.asarray(points, dtype=float)
+    # Build the distance matrix between every pair of points
     distanceMatrix = buildDistanceMatrix(points)
 
-    # Force start at the first input point (index 0)
+     # Compute the visiting order using the randomized nearest neighbor approach
     order = nearestNeigborOrder(distanceMatrix=distanceMatrix)
 
-    # Explicitly return to start in the output
+    # Close the route by returning to the starting point
     order_closed = np.concatenate([order, order[:1]])
 
-    return (points[order_closed] if returnPoints else order_closed)
+    # Return the ordered coordinates of the full route
+    return points[order_closed]
