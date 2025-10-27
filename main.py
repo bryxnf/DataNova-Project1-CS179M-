@@ -58,7 +58,7 @@ def main():
     if best_route is not None:
         print(f"Best distance after optimization: {best_distance:.2f}")
 
-        routeFileCreator(best_route, os.path.splitext(filename)[0], best_distance)
+        routeFileCreator(points, best_route, os.path.splitext(filename)[0], best_distance)
         print("Route file created.")
 
         routeDisplay(best_route, os.path.splitext(filename)[0], best_distance)
