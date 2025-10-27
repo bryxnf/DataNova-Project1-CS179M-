@@ -26,9 +26,6 @@ def main():
         print(f"[ERROR] '{file_path}' not found.")
         return
 
-    #print(f"Drop locations found within input file: {file_path}")
-
-    #print("Running Genetic Algorithm...")
     points = np.loadtxt(file_path)
 
     print("\nRunning optimization using solveTSPNN...(Press ENTER to stop)\n")
