@@ -17,6 +17,7 @@ def tourLengthFromPoints(route_points):
     # Returning the calculation of the Euclidean distance for each leg of the tour
     return float(np.sum(np.linalg.norm(diffs, axis=1)))
 
+# Compares the original Points and Best Route Points and gives their indicies as a return as an array
 def displayRouteIndicies(originalPoints,bestRoutPoints):
     originalPoints = np.asarray(originalPoints, dtype=float)
     bestRoutPoints = np.asarray(bestRoutPoints, dtype=float)
