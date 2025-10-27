@@ -3,7 +3,7 @@ import math
 import random
 import numpy as np
 
-# Computes the distance between two points and returns it
+# Computes the distance between points and returns it
 def buildDistanceMatrix(points):
     # Converting the input points into a numpy array as float points
     pointsArr = np.asarray(points, dtype=float)
@@ -19,53 +19,72 @@ def tourLength(pointsOrder, distanceMatrix):
     # Returning the total tour length in float
     return float(np.sum(distanceMatrix[a,b]))
 
-def nearestNeigborOrder(points=None,D=None,start=0,*,randomStart=1,rng=None):
-    if (points is None) == (D is None):
-        raise ValueError("Provide exactly one of points= or D=.")
+
+def nearestNeigborOrder(points=None,distanceMatrix=None):
+
+    # Checking if one input is atleast given which is points or the distanceMatrix 
+    if (points is None) == (distanceMatrix is None):
+        raise ValueError("Provide exactly one of points= or distanceMatrix=.")
     
-    if D is None:
-        D = buildDistanceMatrix(points)
+    # Computes the distance between points if we dont have one
+    if distanceMatrix is None:
+        distanceMatrix = buildDistanceMatrix(points)
     else:
-        D = np.asarray(D, dtype=float)
+        distanceMatrix = np.asarray(distanceMatrix, dtype=float)
 
-    rng = rng or random
+    # Getting the total number of points we have from the file
+    totalRows = distanceMatrix.shape[0]
+    # Initalizing arrays to track the order of points and visited nodes
+    order = np.empty(totalRows, dtype=int)
+    visited = np.zeros(totalRows, dtype=bool)
 
-    n = D.shape[0]
-    order = np.empty(n, dtype=int)
-    visited = np.zeros(n, dtype=bool)
-
-    cur = int(start) % n
+    cur = 0
     order[0] = cur
     visited[cur] = True
 
-    randomStart = max(1, min(int(randomStart),n))
+    # Iterating over all the nodes
+    for i in range(1, totalRows):
+        # Finding the distance from current point to rest of the point and if 
+        # visited then we set it to infinity to ignore it
+        drow = np.where(visited, np.inf, distanceMatrix[cur])
 
-    for i in range(1, n):
-        drow = np.where(visited, np.inf, D[cur])
-        if randomStart == 1:
-            nxt = int(np.argmin(drow))
+        # Calculating the number of univisted points left
+        remainingNodes = totalRows - np.sum(visited)
+        # Random selection done between 3 or fewer nodes left
+        numNodeRandSelect = min(3, remainingNodes)
+        # Partially rearranging the 3 closest nodes and returning it without fully sorting all the distances
+        candIdx = np.argpartition(drow, numNodeRandSelect-1)[:numNodeRandSelect]
+
+        actualDistance = drow[candIdx].astype(float)
+        # Calculating the inverse distance weights aka higher weight means closer
+        w = 1.0/ (actualDistance + 1.e-12)
+        # Setting the visited infinity nodes weights to 0
+        w[np.isinf(w)] = 0.0
+        # Calculating the total weight
+        totalWeight = w.sum()
+
+        # If total weight is 0 then we fall back to uniform random choice
+        if totalWeight == 0.0:
+            w = np.ones_like(w) / len(w)
         else:
-            remaning = np.sum(~visited)
-            kk = min(randomStart, remaning)
-            candIdx = np.argpartition(drow, kk-1)[:kk]
-            dd = drow[candIdx].astype(float)
-            w = 1.0/ (dd + 1.e-12)
-            w[np.isinf(w)] = 0.0
-            w = w/ w.sum()
-            nxt = int(rng.choices(list(candIdx), weights=list(w), k=1)[0])
+            # Normalizing the weights to sum to 1
+            w = w / totalWeight
+
+        # Randomly chooses one next point from the candidates.
+        nxt = int(random.choices(list(candIdx), weights=list(w), k=1)[0])
         order[i] = nxt
         visited[nxt] = True
         cur = nxt
-
+        
     return order
 
-def solveTSPNN(points, start= 0, returnPoints = False,*, randomStart=1, seed=None):
-    rng = random.Random(seed)
+def solveTSPNN(points, returnPoints = False):
+
     points = np.asarray(points, dtype=float)
-    D = buildDistanceMatrix(points)
+    distanceMatrix = buildDistanceMatrix(points)
 
     # Force start at the first input point (index 0)
-    order = nearestNeigborOrder(D=D, start=0, randomStart=randomStart, rng=rng)
+    order = nearestNeigborOrder(distanceMatrix=distanceMatrix)
 
     # Explicitly return to start in the output
     order_closed = np.concatenate([order, order[:1]])
