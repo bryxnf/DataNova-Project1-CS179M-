@@ -3,7 +3,7 @@ import time
 import numpy as np
 import threading
 
-from GeneticAlgorithm import solveTSPNN, buildDistanceMatrix, tourLength
+from GeneticAlgorithm import solveTSPNN, buildDistanceMatrix, tourLength, tourLengthFromPoints
 from tspOutputFileMaker import routeFileCreator
 from DataVis import routeDisplay
 
@@ -33,7 +33,7 @@ def main():
     best_distance = float('inf')
     best_route = None
     iteration = 0
-    D = buildDistanceMatrix(points)
+    distanceMatrix = buildDistanceMatrix(points)
 
     listener = threading.Thread(target = enterPressed, daemon = True)
     listener.start()
@@ -41,12 +41,12 @@ def main():
     while not inputEntered:
         iteration += 1
         
-        route_indices = solveTSPNN(points, start = 0, returnPoints = False)
-        distance = tourLength(route_indices, D)
+        route_indices = solveTSPNN(points)
+        distance = tourLengthFromPoints(route_indices)
 
         if distance < best_distance:
             best_distance = distance
-            best_route = points[route_indices]
+            best_route = route_indices
             print(f"New best distance found: {best_distance:.2f} on iteration {iteration}")
             
         time.sleep(0.5)  # small delay

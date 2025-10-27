@@ -10,14 +10,30 @@ def buildDistanceMatrix(points):
     # Computing the full pairwise Euclidean distance matrix between all points using NumPy broadcasting
     return np.linalg.norm(pointsArr[:,None,:] - pointsArr[None,:,:], axis = 2)
 
-# Computing the total distance of a closed tour path through a set of points that returns to the start point always
-def tourLength(pointsOrder, distanceMatrix):
-    # Represents the start index of each leg of the tour
-    a = pointsOrder
-    # Destination index of each leg being calculated wrapping back to first node
-    b = np.roll(pointsOrder, -1)
-    # Returning the total tour length in float
-    return float(np.sum(distanceMatrix[a,b]))
+# Computing the total distance of a closed tour path directly from the coordinates that returns to the start point always
+def tourLengthFromPoints(route_points):
+    # Represents the coordinate differences between each consecutive leg of the tour
+    diffs = np.diff(route_points, axis=0)
+    # Returning the calculation of the Euclidean distance for each leg of the tour
+    return float(np.sum(np.linalg.norm(diffs, axis=1)))
+
+def displayRouteIndicies(originalPoints,bestRoutPoints):
+    originalPoints = np.asarray(originalPoints, dtype=float)
+    bestRoutPoints = np.asarray(bestRoutPoints, dtype=float)
+
+    indexMap = {}
+    for i, p in enumerate(originalPoints, start=1):
+        key = (float(p[0]), float(p[1]))
+        indexMap.setdefault(key, []).append(i)
+
+    # Convert best_route coordinates to their original indices
+    routeIndicies = []
+    for p in bestRoutPoints:
+        key = (float(p[0]), float(p[1]))
+        if key in indexMap and indexMap[key]:
+            routeIndicies.append(indexMap[key].pop(0))
+    
+    return routeIndicies
 
 
 def nearestNeigborOrder(points=None,distanceMatrix=None):
@@ -48,10 +64,14 @@ def nearestNeigborOrder(points=None,distanceMatrix=None):
         # visited then we set it to infinity to ignore it
         drow = np.where(visited, np.inf, distanceMatrix[cur])
 
+        # Adding the randomness to picking it to prevent hitting the local minima
+        rand_num = random.randint(1, 256)
+
         # Calculating the number of univisted points left
         remainingNodes = totalRows - np.sum(visited)
-        # Random selection done between 3 or fewer nodes left
-        numNodeRandSelect = min(3, remainingNodes)
+        # Random selection done between 10 or fewer nodes left
+        # Bigger the random select number more exploration aka 10+ and smaller then more deterministic ex 3-5
+        numNodeRandSelect = min(rand_num, remainingNodes)
         # Partially rearranging the 3 closest nodes and returning it without fully sorting all the distances
         candIdx = np.argpartition(drow, numNodeRandSelect-1)[:numNodeRandSelect]
 
