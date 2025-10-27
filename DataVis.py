@@ -32,9 +32,8 @@ def routeDisplay(route, inputBasename, D):     #route are the corrodinates in an
     plt.xlim(xAxisMin - xBuffer, xAxisMax + xBuffer)                                                     #adding 10 pixel buffer between any point and the edges
     plt.ylim(yAxisMin - yBuffer, yAxisMax + yBuffer)        
 
-    desktop = os.path.join(os.path.expanduser("~"), "OneDrive", "Desktop")
     output_folder = os.path.join(os.getcwd(), "OutputRoutes")
-    os.makedirs(output_folder, exist_ok=True)  # ✅ Create folder if missing
+    os.makedirs(output_folder, exist_ok = True) 
     output_to_desktop = os.path.join(output_folder, f"{inputBasename}_SOLUTION_{distanceTraveled}.jpg")
 
     plt.savefig(output_to_desktop, format = "jpeg", dpi = 300)                     #saving it as a jpeg file
