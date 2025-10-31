@@ -28,6 +28,11 @@ def main():
 
     points = np.loadtxt(file_path)
 
+    num_points = len(points)
+    if num_points > 256:
+        print(f"[ERROR] File contains {num_points} nodes, which exceeds the 256 node limit.")
+        return
+
     print("\nRunning optimization using solveTSPNN...(Press ENTER to stop)\n")
 
     best_distance = float('inf')
