@@ -116,7 +116,7 @@ def main():
 
     #need to save new results to graph.py
     print("\nCreating comparative performance graph...")
-    graph.createGraph(distanceNNRand,distanceNN,total_time,total_iterations)
+    graph.createGraph(distanceNNRand,distanceNN,total_time,total_iterations,filename)
 
     if bestRoute is not None:
         routeFileCreator(bestRoute,os.path.splitext(filename)[0],bestDist)

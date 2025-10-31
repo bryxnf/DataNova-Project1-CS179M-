@@ -7,7 +7,7 @@ called "GraphDiff" or whatever you want to call it. Then we return back to main 
 import os
 import matplotlib.pyplot as plt
 
-def createGraph(distanceNNRand,distanceNN,total_time,total_iterations):
+def createGraph(distanceNNRand,distanceNN,total_time,total_iterations,filename):
     output_folder = "GraphDiff"
     os.makedirs(output_folder,exist_ok = True)
 
@@ -32,7 +32,8 @@ def createGraph(distanceNNRand,distanceNN,total_time,total_iterations):
     plt.tight_layout()
 
     #save the plot
-    output_path = os.path.join(output_folder, " NN_Comparison.png")
+    base_name = os.path.splitext(os.path.basename(filename))[0]
+    output_path = os.path.join(output_folder, f"{base_name}_NN_Comparison.png")
     plt.savefig(output_path)
     plt.close()
 
