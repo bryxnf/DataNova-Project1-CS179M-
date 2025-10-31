@@ -1,16 +1,21 @@
 import os
-import sys
 import time
 import numpy as np
+import threading
 
-
-from geneticAlg import solveTSPNN, buildDistanceMatrix, tourLength
+from GeneticAlgorithm import solveTSPNN, buildDistanceMatrix, nearestNeigborOrderRand, solveTSPNNRand, tourLengthFromPoints, displayRouteIndicies
 from tspOutputFileMaker import routeFileCreator
 from DataVis import routeDisplay
 
-    
+inputEntered = False
+
+def enterPressed():
+    global inputEntered
+    input()
+    inputEntered = True
 
 def main():
+    global inputEntered
     print("===Drone Route Optimization Program===")
     filename = input("Enter the name of the input file: ").strip()
 
@@ -21,55 +26,34 @@ def main():
         print(f"[ERROR] '{file_path}' not found.")
         return
 
-    #print(f"Drop locations found within input file: {file_path}")
-
-    #print("Running Genetic Algorithm...")
     points = np.loadtxt(file_path)
 
-    print("\nRunning optimization using solveTSPNN...(Press CTRL + C to stop)\n")
+    print("\nRunning optimization using solveTSPNN...(Press ENTER to stop)\n")
 
     best_distance = float('inf')
     best_route = None
     iteration = 0
+    distanceMatrix = buildDistanceMatrix(points)
 
-    D = buildDistanceMatrix(points)
+    listener = threading.Thread(target = enterPressed, daemon = True)
+    listener.start()
 
-    try:
-        while True:
-            iteration += 1
-
-            route_indices = solveTSPNN(points, start = 0, returnPoints = False)
-            distance = tourLength(route_indices, D)
-            route = points[route_indices]
-
-            if distance < best_distance:
-                best_distance = distance
-                best_route = route_indices
-
-                print(f"New best distance found: {best_distance:.2f} on iteration {iteration}")
-            time.sleep(0.5)  # small delay
-
-    except KeyboardInterrupt:
-        print("\nOptimization stopped by user.\n")
-
-    """
-    while True:
+    while not inputEntered:
         iteration += 1
         
-        route_indices = solveTSPNN(points, start = 0, returnPoints = False)
-        distance = tourLength(route_indices, D)
+        route_indices = solveTSPNN(points)
+        distance = tourLengthFromPoints(route_indices)
 
         if distance < best_distance:
             best_distance = distance
-            best_route = points[route_indices]
-
+            best_route = route_indices
             print(f"New best distance found: {best_distance:.2f} on iteration {iteration}")
+            
         time.sleep(0.5)  # small delay
+        
+    print("\nOptimization stopped by user.\n")
 
-        if user_pressed_enter():
-            print("\nOptimization stopped by user.\n")
-            break
-    """
+    print(f"Indicies of the best route is: {displayRouteIndicies(points,best_route)}")
 
     if best_route is not None:
         print(f"Best distance after optimization: {best_distance:.2f}")
@@ -77,14 +61,12 @@ def main():
         routeFileCreator(best_route, os.path.splitext(filename)[0], best_distance)
         print("Route file created.")
 
-        routeDisplay(points[best_route], os.path.splitext(filename)[0], best_distance)
+        routeDisplay(best_route, os.path.splitext(filename)[0], best_distance)
         print("Route displayed.")
 
     else:
         print("No valid route found.")
 
 
-
 if __name__ == "__main__":
     main()
-

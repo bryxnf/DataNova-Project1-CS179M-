@@ -1,1 +1,5 @@
 __pycache__/
+OutputRoutes/*.jpg
+OutputRoutes/*.jpeg
+OutputRoutes/*.png
+RouteTextFiles/*.txt
