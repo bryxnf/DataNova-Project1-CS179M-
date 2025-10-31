@@ -101,34 +101,10 @@ def nearestNeigborOrderRand(points=None,distanceMatrix=None):
     return order
 
 def nearestNeigborOrder(points=None, distanceMatrix=None):
-    # Check that exactly one input is provided
-    if (points is None) == (distanceMatrix is None):
-        raise ValueError("Provide exactly one of points= or distanceMatrix=.")
-    
-    # Compute distance matrix if points are given
-    if distanceMatrix is None:
-        distanceMatrix = buildDistanceMatrix(points)
-    else:
-        distanceMatrix = np.asarray(distanceMatrix, dtype=float)
 
-    # Get total number of nodes
-    totalRows = distanceMatrix.shape[0]
-    order = np.empty(totalRows, dtype=int)
-    visited = np.zeros(totalRows, dtype=bool)
+# FIX ME
 
-    cur = 0
-    order[0] = cur
-    visited[cur] = True
-
-    # Iteratively choose nearest unvisited neighbor
-    for i in range(1, totalRows):
-        drow = np.where(visited, np.inf, distanceMatrix[cur])  # ignore visited
-        nxt = int(np.argmin(drow))  # pick closest unvisited city
-        order[i] = nxt
-        visited[nxt] = True
-        cur = nxt
-
-    return order
+    return []
 
 def solveTSPNN(points):
     # Convert input points to a NumPy float array for consistency
