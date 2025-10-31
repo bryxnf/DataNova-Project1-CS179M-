@@ -3,7 +3,7 @@ import time
 import numpy as np
 import threading
 
-from GeneticAlgorithm import solveTSPNN, buildDistanceMatrix, tourLengthFromPoints, displayRouteIndicies
+from GeneticAlgorithm import solveTSPNN, buildDistanceMatrix, nearestNeigborOrderRand, solveTSPNNRand, tourLengthFromPoints, displayRouteIndicies
 from tspOutputFileMaker import routeFileCreator
 from DataVis import routeDisplay
 

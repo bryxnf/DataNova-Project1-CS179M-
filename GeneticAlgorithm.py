@@ -41,7 +41,7 @@ def displayRouteIndicies(originalPoints,bestRoutPoints):
     return routeIndicies
 
 
-def nearestNeigborOrder(points=None,distanceMatrix=None):
+def nearestNeigborOrderRand(points=None,distanceMatrix=None):
 
     # Checking if one input is atleast given which is points or the distanceMatrix 
     if (points is None) == (distanceMatrix is None):
@@ -69,14 +69,11 @@ def nearestNeigborOrder(points=None,distanceMatrix=None):
         # visited then we set it to infinity to ignore it
         drow = np.where(visited, np.inf, distanceMatrix[cur])
 
-        # Adding the randomness to picking it to prevent hitting the local minima
-        rand_num = random.randint(1, 256)
-
         # Calculating the number of univisted points left
         remainingNodes = totalRows - np.sum(visited)
         # Random selection done between 10 or fewer nodes left
         # Bigger the random select number more exploration aka 10+ and smaller then more deterministic ex 3-5
-        numNodeRandSelect = min(rand_num, remainingNodes)
+        numNodeRandSelect = min(10, remainingNodes)
         # Partially rearranging the 3 closest nodes and returning it without fully sorting all the distances
         candIdx = np.argpartition(drow, numNodeRandSelect-1)[:numNodeRandSelect]
 
@@ -103,6 +100,36 @@ def nearestNeigborOrder(points=None,distanceMatrix=None):
 
     return order
 
+def nearestNeigborOrder(points=None, distanceMatrix=None):
+    # Check that exactly one input is provided
+    if (points is None) == (distanceMatrix is None):
+        raise ValueError("Provide exactly one of points= or distanceMatrix=.")
+    
+    # Compute distance matrix if points are given
+    if distanceMatrix is None:
+        distanceMatrix = buildDistanceMatrix(points)
+    else:
+        distanceMatrix = np.asarray(distanceMatrix, dtype=float)
+
+    # Get total number of nodes
+    totalRows = distanceMatrix.shape[0]
+    order = np.empty(totalRows, dtype=int)
+    visited = np.zeros(totalRows, dtype=bool)
+
+    cur = 0
+    order[0] = cur
+    visited[cur] = True
+
+    # Iteratively choose nearest unvisited neighbor
+    for i in range(1, totalRows):
+        drow = np.where(visited, np.inf, distanceMatrix[cur])  # ignore visited
+        nxt = int(np.argmin(drow))  # pick closest unvisited city
+        order[i] = nxt
+        visited[nxt] = True
+        cur = nxt
+
+    return order
+
 def solveTSPNN(points):
     # Convert input points to a NumPy float array for consistency
     points = np.asarray(points, dtype=float)
@@ -111,6 +138,21 @@ def solveTSPNN(points):
 
      # Compute the visiting order using the randomized nearest neighbor approach
     order = nearestNeigborOrder(distanceMatrix=distanceMatrix)
+
+    # Close the route by returning to the starting point
+    order_closed = np.concatenate([order, order[:1]])
+
+    # Return the ordered coordinates of the full route
+    return points[order_closed]
+
+def solveTSPNNRand(points):
+    # Convert input points to a NumPy float array for consistency
+    points = np.asarray(points, dtype=float)
+    # Build the distance matrix between every pair of points
+    distanceMatrix = buildDistanceMatrix(points)
+
+     # Compute the visiting order using the randomized nearest neighbor approach
+    order = nearestNeigborOrderRand(distanceMatrix=distanceMatrix)
 
     # Close the route by returning to the starting point
     order_closed = np.concatenate([order, order[:1]])
