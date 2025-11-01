@@ -33,7 +33,6 @@ def main():
     best_distance = float('inf')
     best_route = None
     iteration = 0
-    distanceMatrix = buildDistanceMatrix(points)
 
     listener = threading.Thread(target = enterPressed, daemon = True)
     listener.start()
@@ -52,6 +51,10 @@ def main():
         time.sleep(0.5)  # small delay
         
     print("\nOptimization stopped by user.\n")
+
+    nodeCount = len(points)
+    if nodeCount > 256:
+        print(f"Warning: Solution is {best_distance}, greater than the 6000-meter constraint.")
 
     print(f"Indicies of the best route is: {displayRouteIndicies(points,best_route)}")
 
