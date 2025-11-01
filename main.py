@@ -6,6 +6,7 @@ import threading
 from GeneticAlgorithm import solveTSPNN, buildDistanceMatrix, tourLengthFromPoints, displayRouteIndicies
 from tspOutputFileMaker import routeFileCreator
 from DataVis import routeDisplay
+from inputValidator import load_and_validate_points
 
 inputEntered = False
 
@@ -26,7 +27,11 @@ def main():
         print(f"[ERROR] '{file_path}' not found.")
         return
 
-    points = np.loadtxt(file_path)
+    try:
+        points = load_and_validate_points(file_path,max_nodes = 256, allow_negative = False)
+    except ValueError as e:
+        print(f"[ERROR] Invalid input file: {e}")
+        return
 
     print("\nRunning optimization using solveTSPNN...(Press ENTER to stop)\n")
 
