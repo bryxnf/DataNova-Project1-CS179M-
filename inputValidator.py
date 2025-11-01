@@ -24,7 +24,5 @@ def load_and_validate_points(file_path, max_nodes=256, allow_negative=False):
 
     if len(points) < 2:
         raise ValueError(f"File contains only {len(points)} node(s). Need at least 2 points.")
-    if len(points) > max_nodes:
-        raise ValueError(f"File contains {len(points)} nodes, exceeding the {max_nodes}-node limit.")
 
     return np.array(points, dtype=float)

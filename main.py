@@ -3,7 +3,7 @@ import time
 import numpy as np
 import threading
 
-from GeneticAlgorithm import solveTSPNN, buildDistanceMatrix, tourLengthFromPoints, displayRouteIndicies
+from GeneticAlgorithm import solveTSPNN, tourLengthFromPoints, displayRouteIndicies
 from tspOutputFileMaker import routeFileCreator
 from DataVis import routeDisplay
 from inputValidator import load_and_validate_points
@@ -38,7 +38,6 @@ def main():
     best_distance = float('inf')
     best_route = None
     iteration = 0
-    distanceMatrix = buildDistanceMatrix(points)
 
     listener = threading.Thread(target = enterPressed, daemon = True)
     listener.start()
@@ -62,6 +61,9 @@ def main():
 
     if best_route is not None:
         print(f"Best distance after optimization: {best_distance:.2f}")
+
+        if best_distance > 6000:
+            print(f"Warning: Solution is {best_distance:.2f}, greater than the 6000-meter constraint.")
 
         routeFileCreator(points, best_route, os.path.splitext(filename)[0], best_distance)
         print("Route file created.")
