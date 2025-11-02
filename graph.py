@@ -6,6 +6,12 @@ called "GraphDiff" or whatever you want to call it. Then we return back to main 
 
 import os
 import matplotlib.pyplot as plt
+import numpy as np
+
+def smooth(y, window_size=10):  #return a smoothed version of y using a moving average
+    if len(y) < window_size:
+        return y
+    return np.convolve(y, np.ones(window_size)/window_size, mode='valid')
 
 def createGraph(distanceNNRand,distanceNN,total_time,total_iterations,filename):
     output_folder = "GraphDiff"
@@ -20,9 +26,19 @@ def createGraph(distanceNNRand,distanceNN,total_time,total_iterations,filename):
     normal_iters = [d[1] for d in distanceNN]
     normal_times = [d[2] for d in distanceNN]
 
+    window_size = 40
+    rand_distances_smooth = smooth(rand_distances, window_size)
+    rand_times_smooth = rand_times[:len(rand_distances_smooth)]
+
+    normal_distances_smooth = smooth(normal_distances, window_size)
+    normal_times_smooth = normal_times[:len(normal_distances_smooth)]
+
+
+
+
     plt.figure(figsize = (10,6))
-    plt.plot(rand_times,rand_distances,label = "Randomized NN", color ="orange")
-    plt.plot(normal_times,normal_distances,label = "Normal NN", color ="blue")
+    plt.plot(rand_times_smooth,rand_distances_smooth,label = "Randomized NN", color ="orange")
+    plt.plot(normal_times_smooth,normal_distances_smooth,label = "Normal NN", color ="blue")
 
     plt.xlabel("Time (seconds)")
     plt.ylabel("Route Distance")

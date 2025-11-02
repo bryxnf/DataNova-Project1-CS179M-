@@ -28,6 +28,7 @@ def main():
 
     points = np.loadtxt(file_path)
 
+
     print("\nRunning optimization using solveTSPNN...(Press ENTER to stop)\n")
 
     best_distance = float('inf')
