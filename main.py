@@ -6,6 +6,7 @@ import threading
 from GeneticAlgorithm import solveTSPNN, buildDistanceMatrix, nearestNeigborOrderRand, solveTSPNNRand, tourLengthFromPoints, displayRouteIndicies
 from tspOutputFileMaker import routeFileCreator
 from DataVis import routeDisplay
+from inputValidator import load_and_validate_points
 
 inputEntered = False
 
@@ -26,7 +27,11 @@ def main():
         print(f"[ERROR] '{file_path}' not found.")
         return
 
-    points = np.loadtxt(file_path)
+    try:
+        points = load_and_validate_points(file_path,max_nodes = 256, allow_negative = False)
+    except ValueError as e:
+        print(f"[ERROR] Invalid input file: {e}")
+        return
 
     print("\nRunning optimization using solveTSPNN...(Press ENTER to stop)\n")
 
@@ -61,7 +66,10 @@ def main():
     if best_route is not None:
         print(f"Best distance after optimization: {best_distance:.2f}")
 
-        routeFileCreator(best_route, os.path.splitext(filename)[0], best_distance)
+        if best_distance > 6000:
+            print(f"Warning: Solution is {best_distance:.2f}, greater than the 6000-meter constraint.")
+
+        routeFileCreator(points, best_route, os.path.splitext(filename)[0], best_distance)
         print("Route file created.")
 
         routeDisplay(best_route, os.path.splitext(filename)[0], best_distance)
